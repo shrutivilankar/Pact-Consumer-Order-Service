@@ -34,17 +34,6 @@ node {
             def versionNo = artifactFile[0].name.minus("order-service-").minus(".jar")
             sh "${pactBrockerCli} publish target/pacts --consumer-app-version=${versionNo} --broker-base-url=http://broker_app"
         }
-    }
-
-    // need a better strategy for post build notifications - may be declarative pipeline.
-    stage("slack notification") {
-        if(currentBuild.result == "FAILURE") {
-            slackSend (color: '#E01563', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", channel: '#order-service-team')
-        } else if(currentBuild.result == "UNSTABLE") {
-            slackSend (color: '#E01563', message: "UNSTABLE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", channel: '#order-service-team')
-        } else if(currentBuild.getPreviousBuild() != null && (currentBuild.getPreviousBuild().result == 'FAILURE' || currentBuild.getPreviousBuild().result == 'UNSTABLE')) {
-            slackSend (color: '#3EB991', message: "BACK TO NORMAL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", channel: '#order-service-team')
-        }
-    }
+    }  
 
 }
